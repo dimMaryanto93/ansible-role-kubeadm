@@ -40,12 +40,23 @@
     include_tasks: add-repo-debian.yaml
     when: ansible_facts['os_family'] == 'RedHat'
 
+  - name: Install packages needed to use the Kubernetes
+    package: 
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+      - apt-transport-https 
+      - ca-certificates
+    when: ansible_facts['os_family'] == 'Debian'
+  
   - name: Install Kubernetes binaries
     package: 
       name: "{{ item }}"
       state: present
       update_cache: yes
     loop:
+      - curl
       - kubelet 
       - kubeadm 
       - kubectl

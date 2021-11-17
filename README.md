@@ -30,7 +30,20 @@ Persiapan yang harus di lalukan, diantaranya
 
 Requirements
 ------------
-None
+
+Untuk menggunakan role ini, kita membutuhkan collection/plugins seperti berikut:
+
+```bash
+ansible-galaxy collection install community.general ansible.posix
+```
+
+Atau temen-temen bisa menggunakan `requirements.yaml` file and install menggunakan `ansible-galaxy collection install -r requirements.yaml`, dengan format seperti berikut:
+
+```yaml
+collections:
+  - community.general
+  - ansible.posix
+```
 
 Role Variables
 --------------

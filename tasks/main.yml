@@ -32,13 +32,6 @@
 
 - name: Install kubeadm to create a kubernetes cluster
   block:
-  - name: Add repo kubernetes from gcp for Debian based
-    include_tasks: add-repo-debian.yaml
-    when: ansible_facts['os_family'] == 'Debian'
-  
-  - name: Add repo kubernetes from gcp for Redhat based
-    include_tasks: add-repo-debian.yaml
-    when: ansible_facts['os_family'] == 'RedHat'
 
   - name: Install packages needed to use the Kubernetes
     package: 
@@ -49,6 +42,14 @@
       - apt-transport-https 
       - ca-certificates
     when: ansible_facts['os_family'] == 'Debian'
+  
+  - name: Add repo kubernetes from gcp for Debian based
+    include_tasks: add-repo-debian.yaml
+    when: ansible_facts['os_family'] == 'Debian'
+  
+  - name: Add repo kubernetes from gcp for Redhat based
+    include_tasks: add-repo-debian.yaml
+    when: ansible_facts['os_family'] == 'RedHat'
   
   - name: Install Kubernetes binaries
     package: 

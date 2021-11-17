@@ -50,9 +50,42 @@
       - kubeadm 
       - kubectl
 
-  - name: Start Kubelet service
-    service:
-      name: kubelet
-      daemon_reload: yes
-      enabled: yes
-      state: started
+- name: Apply iptables rules for kubernetes
+  block: 
+    
+    - name: Add rules for Kubernetes on RedHat based
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+        zone: public
+      loop: 
+        - 6443/tcp # Kubernetes API server
+        - 2379-2380/tcp # etcd server client API
+        - 10250/tcp # Kubelet API
+        - 10259/tcp # kube-scheduler
+        - 10257/tcp # kube-controller-manager
+        - 30000-32767/tcp # NodePort Services
+      notify: 
+        - Reload firewalld
+      when: ansible_facts['os_family'] == 'RedHat'
+    
+    - name: Add rules for Kubernetes on Debian based
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop: 
+        - "6443" # Kubernetes API server
+        - "2379:2380" # etcd server client API
+        - "10250" # Kubelet API
+        - "10259" # kube-scheduler
+        - "10257" # kube-controller-manager
+        - "30000:32767" # NodePort Services
+
+- name: Start Kubelet service
+  service:
+    name: kubelet
+    daemon_reload: yes
+    enabled: yes
+    state: started

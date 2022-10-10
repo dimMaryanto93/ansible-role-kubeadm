@@ -48,7 +48,7 @@
     when: ansible_facts['os_family'] == 'Debian'
   
   - name: Add repo kubernetes from gcp for Redhat based
-    include_tasks: add-repo-debian.yaml
+    include_tasks: add-repo-redhat.yaml
     when: ansible_facts['os_family'] == 'RedHat'
   
   - name: Install Kubernetes binaries
@@ -56,6 +56,7 @@
       name: "{{ item }}"
       state: present
       update_cache: yes
+      disable_excludes: kubernetes
     loop:
       - curl
       - kubelet 
@@ -63,8 +64,7 @@
       - kubectl
 
 - name: Apply iptables rules for kubernetes
-  block: 
-    
+  block:
     - name: Add rules for Kubernetes on RedHat based
       ansible.posix.firewalld:
         port: "{{ item }}"
@@ -94,6 +94,7 @@
         - "10259" # kube-scheduler
         - "10257" # kube-controller-manager
         - "30000:32767" # NodePort Services
+      when: ansible_facts['os_family'] == 'Debian'
 
 - name: Start Kubelet service
   service:

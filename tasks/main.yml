@@ -56,8 +56,6 @@
     package: 
       name: "{{ item }}"
       state: present
-      update_cache: yes
-      disable_excludes: kubernetes
     loop:
       - curl
       - kubelet 

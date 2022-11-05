@@ -42,6 +42,7 @@
     loop:
       - apt-transport-https 
       - ca-certificates
+      - ufw
     when: ansible_facts['os_family'] == 'Debian'
   
   - name: Add repo kubernetes from gcp for Debian based
